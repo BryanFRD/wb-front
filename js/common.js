@@ -5,7 +5,6 @@ searchBarForm?.addEventListener('submit', (event) => {
   const searchParams = new URLSearchParams([['search', search]]);
   
   if(window.location.pathname != '/' || window.location.search != `?${searchParams.toString()}`){
-    window.location.pathname = '/';
-    window.location.search = searchParams.toString();
+    window.location.href = `${window.location.origin}/?${searchParams.toString()}`;
   }
 });
