@@ -6,7 +6,9 @@ const chart = new Chart(document.getElementById('measureChart'),
     type: 'line',
     data: {
       labels: [],
-      datasets: [{}],
+      datasets: [{
+        label: ''
+      }],
     },
     options: {
       responsive: true,
@@ -53,7 +55,7 @@ const updateGraph = async () => {
     return date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
   });
   
-  chart.data.datasets[0].data = measurements?.datas?.map(value => value.measure)
+  chart.data.datasets[0].data = measurements?.datas?.map(value => value.measure);
   
   chart.update();
 }
@@ -70,6 +72,9 @@ const fetchSensor = async () => {
 
 const updateSensor = async () => {
   const sensor = await fetchSensor();
+  
+  chart.data.datasets[0].label = sensor.measurementType;
+  chart.update();
   
   const moduleDiv = document.getElementById('sensorDetails');
   moduleDiv.textContent = '';
