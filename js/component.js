@@ -36,11 +36,30 @@ export const sensorListComponent = (sensor) => {
   const measurementTypeCountElement = document.createElement('span');
   measurementTypeCountElement.innerText = `(${sensor?.measurementType})`;
   
-  const measurementsCountElement = document.createElement('span');
-  measurementsCountElement.setAttribute('class', 'ms-lg-auto');
-  measurementsCountElement.innerText = `Nombre de mesure : ${sensor?.measurementCount}`;
-  
-  container.append(statusElement, titleElement, measurementTypeCountElement, measurementsCountElement);
+  container.append(statusElement, titleElement, measurementTypeCountElement);
   
   return container;
+}
+
+export const infiniteScroll = {
+  offset: 1,
+  limit: 50,
+  step: 50,
+  max: 50,
+  shown: false,
+  observer: new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && !infiniteScroll.shown){
+        infiniteScroll.shown = true;
+        infiniteScroll.limit = Math.min(infiniteScroll.step * infiniteScroll.offset, infiniteScroll.max);
+        infiniteScroll.offset += Math.floor(Math.min(infiniteScroll.max / infiniteScroll.step, infiniteScroll.offset + 1));
+      } else {
+        infiniteScroll.shown = false;
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.5
+  })
 }
