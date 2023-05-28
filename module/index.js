@@ -1,7 +1,8 @@
 import { API_URL } from '../js/constant.js';
-import { sensorListComponent } from '../js/component.js';
+import { sensorListComponent, infiniteScroll } from '../js/component.js';
 
 const id = new URLSearchParams(window.location.search).get('id');
+infiniteScroll.observer.observe(document.getElementById("infinite_scroll"));
 
 setInterval(() => {
   updateSensors();
@@ -26,7 +27,7 @@ const updateModule = async () => {
   const titleElement = document.createElement('h2');
   moduleDiv.append(titleElement);
   
-  if(!module){
+  if(!module?.id){
     title.innerText = `Impossible de trouver un module avec l'id : ${id}`;
     return;
   }
@@ -36,7 +37,7 @@ const updateModule = async () => {
 
 const fetchSensors = async () => {
   const id = new URLSearchParams(window.location.search).get('id');
-  return await fetch(`${API_URL}/modules/${id}/sensors`)
+  return await fetch(`${API_URL}/modules/${id}/sensors?limit=${infiniteScroll.limit}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -48,10 +49,11 @@ const fetchSensors = async () => {
 const updateSensors = async () => {
   const sensors = await fetchSensors();
   
+  infiniteScroll.max = sensors.count;
+  
   const sensorsDiv = document.getElementById('sensors');
   sensorsDiv.textContent = '';
   sensors?.datas?.forEach(sensor => {
-    console.log('sensor:', sensor);
     sensorsDiv.appendChild(sensorListComponent(sensor));
   });
 }
