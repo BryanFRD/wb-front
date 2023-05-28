@@ -13,16 +13,14 @@
   <header>
     <nav class="navbar navbar-expand-lg bg-body-tertiary shadow">
       <div class="container-fluid">
-        <div class="d-flex gap-2 col-lg-3 align-items-center">
-          <a class="navbar-brand" href="/">WB-Front</a>
-          <button id="createModuleButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer un module</button>
-          <button id="createSensorButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer un capteur</button>
-          <button id="createMeasureButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer une mesure</button>
-        </div>
+        <a class="navbar-brand" href="/">WB-Front</a>
         <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse col-lg-6 pt-3 pt-lg-0" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse col-lg-6 pt-3 pt-lg-0 d-flex flex-column flex-lg-row align-items-start gap-3" id="navbarSupportedContent">
+          <button id="createModuleButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer un module</button>
+          <button id="createSensorButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer un capteur</button>
+          <button id="createMeasureButton" class="bg-transparent text-nowrap border-0 navbar-button align-self-lg-stretch rounded">Créer une mesure</button>
           <form class="d-flex gap-4 justify-content-center mx-lg-auto" role="search" id="searchBarForm">
             <input class="form-control" type="search" name="search" placeholder="Nom du module" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Chercher</button>
