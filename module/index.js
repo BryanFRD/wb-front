@@ -33,10 +33,15 @@ const updateModule = async () => {
   }
   
   titleElement.innerText = module.name;
+  
+  const statusElement = document.createElement('h2');
+  statusElement.setAttribute('class', module.status === 'active' ? 'text-success' : module.status === 'inactive' ? 'text-danger' : 'text-warning');
+  statusElement.innerText = `(${module.status})`;
+  
+  moduleDiv.append(statusElement);
 }
 
 const fetchSensors = async () => {
-  const id = new URLSearchParams(window.location.search).get('id');
   return await fetch(`${API_URL}/modules/${id}/sensors?limit=${infiniteScroll.limit}`)
     .then(resp => resp.json())
     .then(resp => resp)
