@@ -38,7 +38,7 @@ setInterval(() => {
 }, 5000);
 
 const fetchMeasure = async () => {
-  return await fetch(`${API_URL}/sensors/${id}/measurements`)
+  return await fetch(`${API_URL}/sensors/${encodeURIComponent(id)}/measurements`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -61,7 +61,7 @@ const updateGraph = async () => {
 }
 
 const fetchSensor = async () => {
-  return await fetch(`${API_URL}/sensors/${id}`)
+  return await fetch(`${API_URL}/sensors/${encodeURIComponent(id)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {

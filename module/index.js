@@ -9,7 +9,7 @@ setInterval(() => {
 }, 5000);
 
 const fetchModule = async () => {
-  return await fetch(`${API_URL}/modules/${id}`)
+  return await fetch(`${API_URL}/modules/${encodeURIComponent(id)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -42,7 +42,7 @@ const updateModule = async () => {
 }
 
 const fetchSensors = async () => {
-  return await fetch(`${API_URL}/modules/${id}/sensors?limit=${infiniteScroll.limit}`)
+  return await fetch(`${API_URL}/modules/${encodeURIComponent(id)}/sensors?limit=${encodeURIComponent(infiniteScroll.limit)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {

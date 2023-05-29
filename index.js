@@ -4,12 +4,14 @@ import { moduleListComponent, infiniteScroll } from './js/component.js';
 const search = new URLSearchParams(window.location.search).get('search');
 infiniteScroll.observer.observe(document.getElementById("infinite_scroll"));
 
+document.getElementById('navbarSearch').value = search;
+
 setInterval(() => {
   updateModules();
 }, 5000);
 
 const fetchModules = async () => {
-  return await fetch(`${API_URL}/modules?search=${search ?? ''}&limit=${infiniteScroll.limit}`)
+  return await fetch(`${API_URL}/modules?search=${encodeURIComponent(search ?? '')}&limit=${encodeURIComponent(infiniteScroll.limit)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
