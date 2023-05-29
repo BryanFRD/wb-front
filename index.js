@@ -28,7 +28,7 @@ const updateModules = async () => {
   const modulesDiv = document.getElementById('modules');
   modulesDiv.textContent = '';
   modules?.datas?.forEach(module => {
-    modulesDiv.appendChild(moduleListComponent(module));
+    modulesDiv.appendChild(moduleListComponent(module, updateModules));
   });
 }
 

@@ -1,4 +1,4 @@
-import { moduleModal, sensorModal } from './component.js';
+import { measureModal, moduleModal, sensorModal } from './component.js';
 
 searchBarForm?.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -24,7 +24,7 @@ document.getElementById("createSensorButton").addEventListener('click', () => {
 });
 
 document.getElementById("createMeasureButton").addEventListener('click', () => {
-  moduleModal(modalBootstrap);
+  measureModal(modalBootstrap);
   modalBootstrap.show();
 });
 

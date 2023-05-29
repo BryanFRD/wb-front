@@ -27,11 +27,8 @@ export const moduleListComponent = (module, refreshCallback) => {
   const updateElement = document.createElement('button');
   updateElement.setAttribute('class', 'bi bi-pen text-white btn btn-primary rounded-0');
   updateElement.addEventListener('click', () => {
-    moduleModal(modalBootstrap, module);
+    moduleModal(modalBootstrap, module, refreshCallback);
     modalBootstrap.show();
-    
-    if(refreshCallback)
-      refreshCallback();
   });
   
   const deleteElement = document.createElement('button');
@@ -85,11 +82,8 @@ export const sensorListComponent = (sensor, refreshCallback) => {
   const updateElement = document.createElement('button');
   updateElement.setAttribute('class', 'bi bi-pen text-white btn btn-primary rounded-0');
   updateElement.addEventListener('click', () => {
-    sensorModal(modalBootstrap, sensor);
+    sensorModal(modalBootstrap, sensor, refreshCallback);
     modalBootstrap.show();
-    
-    if(refreshCallback)
-      refreshCallback();
   });
   
   const deleteElement = document.createElement('button');
@@ -148,7 +142,7 @@ export const setModal = (title, form) => {
   return modal;
 }
 
-export const moduleModal = (modal, data) => {
+export const moduleModal = (modal, data, refreshCallback) => {
   const form = document.createElement('form');
   form.setAttribute('class', 'd-flex flex-column gap-3');
   form.addEventListener('submit', event => {
@@ -162,10 +156,17 @@ export const moduleModal = (modal, data) => {
       body: JSON.stringify(entries)
     })
       .then(resp =>  resp.json())
-      .then(() => modal.hide())
+      .then(() => {
+        modal.hide();
+        toast(`Module ${data?.id ? 'mis à jour' : 'créé'}`, 'text-bg-success');
+      })
       .catch(error => {
         toast(`Impossible de ${data?.id ? 'mettre à jour le' : 'créer un'} module`, 'text-bg-danger');
         return error;
+      })
+      .finally(() => {
+        if(refreshCallback)
+          refreshCallback();
       });
   });
   
@@ -181,12 +182,12 @@ export const moduleModal = (modal, data) => {
   statusSelect.setAttribute('class', 'form-select');
   statusSelect.setAttribute('name', 'status');
   
-  ['active', 'faulty', 'inactive'].forEach((value, index) => {
+  ['active', 'faulty', 'inactive'].forEach((value) => {
     const option = document.createElement('option');
     option.setAttribute('value', value);
     option.innerText = value;
     
-    if(!index)
+    if(value === data?.status)
       option.setAttribute('selected', 'selected');
     
     statusSelect.appendChild(option);
@@ -217,7 +218,7 @@ export const moduleModal = (modal, data) => {
   setModal('Module', form);
 }
 
-export const sensorModal = async (modal, data) => {
+export const sensorModal = async (modal, data, refreshCallback) => {
   const form = document.createElement('form');
   form.setAttribute('class', 'd-flex flex-column gap-3');
   form.addEventListener('submit', event => {
@@ -231,11 +232,18 @@ export const sensorModal = async (modal, data) => {
       body: JSON.stringify(entries)
     })
       .then(resp =>  resp.json())
-      .then(() => modal.hide())
+      .then(() => {
+        modal.hide();
+        toast(`Capteur ${data?.id ? 'mis à jour' : 'créé'}`, 'text-bg-success');
+      })
       .catch(error => {
         toast(`Impossible de ${data?.id ? 'mettre à jour le' : 'créer un'} module`, 'text-bg-danger');
         return error;
-      });
+      })
+      .finally(() => {
+        if(refreshCallback)
+          refreshCallback();
+      });;
   });
   
   const inputsContainer = document.createElement('div');
@@ -250,12 +258,12 @@ export const sensorModal = async (modal, data) => {
   statusSelect.setAttribute('class', 'form-select');
   statusSelect.setAttribute('name', 'status');
   
-  ['active', 'faulty', 'inactive'].forEach((value, index) => {
+  ['active', 'faulty', 'inactive'].forEach((value) => {
     const option = document.createElement('option');
     option.setAttribute('value', value);
     option.innerText = value;
     
-    if(!index)
+    if(value === data?.status)
       option.setAttribute('selected', 'selected');
       
       statusSelect.appendChild(option);
@@ -327,7 +335,7 @@ export const sensorModal = async (modal, data) => {
       .catch(() => null);
   }
   
-  const tomSelect = new TomSelect('#moduleSelect', {
+  new TomSelect('#moduleSelect', {
     valueField: 'id',
     labelField: 'name',
     searchField: 'name',
@@ -340,14 +348,115 @@ export const sensorModal = async (modal, data) => {
         .then(resp => resp.json())
         .then(resp => callback(resp?.datas))
         .catch(() => callback());
-    },
-    onChange: () => {
-      console.log('tomSelect:', tomSelect);
     }
   });
+}
+
+export const measureModal = async (modal, data, refreshCallback) => {
+  const form = document.createElement('form');
+  form.setAttribute('class', 'd-flex flex-column gap-3');
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    
+    const formData = new FormData(form);
+    const entries = Object.fromEntries(formData);
+    console.log('entries:', entries);
+    
+    fetch(`${API_URL}/measurements${data?.id ? `/${encodeURIComponent(data.id)}` : ''}`, {
+      method: data?.id ? 'PUT' : 'POST',
+      body: JSON.stringify(entries)
+    })
+      .then(resp =>  resp.json())
+      .then(() => {
+        modal.hide();
+        toast(`Mesure ${data?.id ? 'mise à jour' : 'créée'}`, 'text-bg-success');
+      })
+      .catch(error => {
+        toast(`Impossible de ${data?.id ? 'mettre à jour la' : 'créer une'} mesure`, 'text-bg-danger');
+        return error;
+      })
+      .finally(() => {
+        if(refreshCallback)
+          refreshCallback();
+      });;
+  });
   
-  console.log('tomSelect:', tomSelect);
+  const inputsContainer = document.createElement('div');
+  inputsContainer.setAttribute('class', 'd-flex flex-column gap-3');
   
+  const measureDiv = document.createElement('div');
+  measureDiv.setAttribute('class', 'd-flex');
+  const measureLabel = document.createElement('label');
+  measureLabel.setAttribute('class', 'col-4');
+  measureLabel.innerText = 'Mesure';
+  const measureInput = document.createElement('input');
+  measureInput.setAttribute('type', 'number');
+  measureInput.setAttribute('class', 'form-control');
+  measureInput.setAttribute('name', 'measure');
+  measureInput.setAttribute('step', '0.01');
+  
+  measureDiv.append(measureLabel, measureInput);
+  
+  const sensorDiv = document.createElement('div');
+  sensorDiv.setAttribute('class', 'd-flex');
+  const sensorLabel = document.createElement('label');
+  sensorLabel.setAttribute('class', 'col-4');
+  sensorLabel.innerText = 'Capteur';
+  const sensorSelect = document.createElement('select');
+  sensorSelect.setAttribute('class', 'w-100');
+  sensorSelect.setAttribute('name', 'sensorId');
+  sensorSelect.setAttribute('id', 'sensorSelect');
+  
+  sensorDiv.append(sensorLabel, sensorSelect);
+  
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.setAttribute('class', 'd-flex gap-3 justify-content-end');
+  
+  const submitButton = document.createElement('button');
+  submitButton.setAttribute('class', 'btn btn-success');
+  submitButton.setAttribute('type', 'submit');
+  submitButton.innerText = data?.id ? 'Mettre à jour' : 'Créer';
+  
+  const cancelButton = document.createElement('button');
+  cancelButton.setAttribute('class', 'btn btn-danger');
+  cancelButton.setAttribute('type', 'button');
+  cancelButton.setAttribute('data-bs-dismiss', 'modal');
+  cancelButton.innerText = 'Annuler';
+  
+  buttonsContainer.append(cancelButton, submitButton);
+  
+  inputsContainer.append(
+    measureDiv,
+    sensorDiv
+  );
+  
+  form.append(inputsContainer, buttonsContainer);
+  
+  setModal('Capteur', form);
+  
+  let measureSensor = {};
+  if(data?.sensorId){
+    measureSensor = await fetch(`${API_URL}/sensors/${encodeURIComponent(data?.sensorId)}`)
+      .then(resp => resp.json())
+      .then(resp => resp)
+      .catch(() => null);
+  }
+  
+  new TomSelect('#sensorSelect', {
+    valueField: 'id',
+    labelField: 'name',
+    searchField: 'name',
+    maxItems: 1,
+    preload: true,
+    options: [{id: measureSensor?.id, name: measureSensor?.name}],
+    items: [measureSensor?.id],
+    load: (query, callback) => {
+      fetch(`${API_URL}/sensors/?search=${encodeURIComponent(query)}`)
+        .then(resp => resp.json())
+        .then(resp => callback(resp?.datas))
+        .catch(() => callback());
+    }
+  });
 }
 
 export const createInputDiv = (label, type, name, defaultValue) => {

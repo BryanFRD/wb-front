@@ -59,7 +59,7 @@ const updateSensors = async () => {
   const sensorsDiv = document.getElementById('sensors');
   sensorsDiv.textContent = '';
   sensors?.datas?.forEach(sensor => {
-    sensorsDiv.appendChild(sensorListComponent(sensor));
+    sensorsDiv.appendChild(sensorListComponent(sensor, updateSensors));
   });
 }
 
