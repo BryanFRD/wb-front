@@ -9,7 +9,7 @@ setInterval(() => {
 }, 5000);
 
 const fetchModule = async () => {
-  return await fetch(`${API_URL}/modules/${id}`)
+  return await fetch(`${API_URL}/modules/${encodeURIComponent(id)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -33,11 +33,16 @@ const updateModule = async () => {
   }
   
   titleElement.innerText = module.name;
+  
+  const statusElement = document.createElement('h2');
+  statusElement.setAttribute('class', module.status === 'active' ? 'text-success' : module.status === 'inactive' ? 'text-danger' : 'text-warning');
+  statusElement.innerText = `(${module.status})`;
+  
+  moduleDiv.append(statusElement);
 }
 
 const fetchSensors = async () => {
-  const id = new URLSearchParams(window.location.search).get('id');
-  return await fetch(`${API_URL}/modules/${id}/sensors?limit=${infiniteScroll.limit}`)
+  return await fetch(`${API_URL}/modules/${encodeURIComponent(id)}/sensors?limit=${encodeURIComponent(infiniteScroll.limit)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -54,7 +59,7 @@ const updateSensors = async () => {
   const sensorsDiv = document.getElementById('sensors');
   sensorsDiv.textContent = '';
   sensors?.datas?.forEach(sensor => {
-    sensorsDiv.appendChild(sensorListComponent(sensor));
+    sensorsDiv.appendChild(sensorListComponent(sensor, updateSensors));
   });
 }
 

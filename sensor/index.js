@@ -6,7 +6,9 @@ const chart = new Chart(document.getElementById('measureChart'),
     type: 'line',
     data: {
       labels: [],
-      datasets: [{}],
+      datasets: [{
+        label: ''
+      }],
     },
     options: {
       responsive: true,
@@ -36,7 +38,7 @@ setInterval(() => {
 }, 5000);
 
 const fetchMeasure = async () => {
-  return await fetch(`${API_URL}/sensors/${id}/measurements`)
+  return await fetch(`${API_URL}/sensors/${encodeURIComponent(id)}/measurements`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -53,13 +55,13 @@ const updateGraph = async () => {
     return date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
   });
   
-  chart.data.datasets[0].data = measurements?.datas?.map(value => value.measure)
+  chart.data.datasets[0].data = measurements?.datas?.map(value => value.measure);
   
   chart.update();
 }
 
 const fetchSensor = async () => {
-  return await fetch(`${API_URL}/sensors/${id}`)
+  return await fetch(`${API_URL}/sensors/${encodeURIComponent(id)}`)
     .then(resp => resp.json())
     .then(resp => resp)
     .catch(error => {
@@ -70,6 +72,9 @@ const fetchSensor = async () => {
 
 const updateSensor = async () => {
   const sensor = await fetchSensor();
+  
+  chart.data.datasets[0].label = sensor.measurementType;
+  chart.update();
   
   const moduleDiv = document.getElementById('sensorDetails');
   moduleDiv.textContent = '';
