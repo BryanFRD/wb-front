@@ -1,3 +1,7 @@
 .navbar-button:hover {
   background-color: #e9ecef !important;
 }
+
+#toast {
+  z-index: 999999;
+}
