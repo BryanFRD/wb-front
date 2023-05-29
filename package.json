@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "date-fns": "^2.30.0",
-    "tom-select": "^2.2.2"
+    "date-fns": "^2.30.0"
   }
 }
